@@ -1,11 +1,17 @@
 import React from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../utils/firebase";
+import { addUser, removeUser } from "../utils/userSlice";
 import { useSelector } from "react-redux/es/hooks/useSelector";
+import { USER_AVATAR, LOGO } from "../utils/constants";
 
 const Header = () => {
   const user = useSelector((store) => store.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   function handleSignOut() {
     signOut(auth)
@@ -18,20 +24,32 @@ const Header = () => {
         navigate("/error");
       });
   }
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/auth.user
+        const { uid, email, displayName } = user;
+        dispatch(addUser({ uid: uid, email: email, displayName: displayName }));
+        navigate("/browse");
+
+        // ...
+      } else {
+        // User is signed out
+        // ...
+        dispatch(removeUser());
+        navigate("/");
+      }
+    });
+    ///unsubscibe when component unmounts
+    return () => unsubscribe();
+  }, []);
   return (
     <div className="absolute w-screen px-8 py-2 bg-gradient-to-b from-black z-10 flex justify-between">
-      <img
-        className="w-44"
-        src="https://images.ctfassets.net/4cd45et68cgf/7LrExJ6PAj6MSIPkDyCO86/542b1dfabbf3959908f69be546879952/Netflix-Brand-Logo.png?w=700&h=456"
-        alt="logo"
-      />
+      <img className="w-44" src={LOGO} alt="LOGO" />
       {user && (
         <div className="flex p-2">
-          <img
-            className=" w-12 h-12 "
-            src="https://pbs.twimg.com/media/DN1OYIFX0AAbOMe.jpg"
-            alt="usericon"
-          />
+          <img className=" w-12 h-12 " src={USER_AVATAR} alt="usericon" />
           <button
             onClick={handleSignOut}
             className=" w-20 h-12 font-bold text-white  border-2 border-red-600"

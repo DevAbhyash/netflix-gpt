@@ -5,10 +5,10 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
-
 import Header from "./Header";
 import { validate } from "../utils/Validate";
 import { useNavigate } from "react-router-dom";
+import { BACKGROUND } from "../utils/constants";
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
@@ -39,7 +39,6 @@ const Login = () => {
         .then((userCredential) => {
           // Signed up logic
           const user = userCredential.user;
-          navigate("/browse");
 
           // ...
         })
@@ -60,7 +59,7 @@ const Login = () => {
           // Signed in
           const user = userCredential.user;
           setIsValidated("Successfully Logged In now");
-          navigate("/browse");
+
           // ...
         })
         .catch((error) => {
@@ -74,10 +73,7 @@ const Login = () => {
     <div>
       <Header />
       <div className="absolute">
-        <img
-          src="https://assets.nflxext.com/ffe/siteui/vlv3/00103100-5b45-4d4f-af32-342649f1bda5/9070283d-82ca-47f7-8a99-d49ea3afa60a/AU-en-20230821-popsignuptwoweeks-perspective_alpha_website_small.jpg"
-          alt="background"
-        />
+        <img src={BACKGROUND} alt="background" />
       </div>
       <form
         onSubmit={(e) => {
