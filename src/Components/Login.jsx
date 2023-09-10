@@ -2,20 +2,28 @@ import React, { useState, useRef } from "react";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
 
 import Header from "./Header";
 import { validate } from "../utils/Validate";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
   const [isValidated, setIsValidated] = useState();
+  ///
   const email = useRef();
   const password = useRef();
+  const name = useRef();
+  ///
+  const navigate = useNavigate();
+  ///
   function toggleSignInForm() {
     setIsSignInForm(!isSignInForm);
   }
+  ///
   function handleClick() {
     const message = validate(email.current.value, password.current.value);
     setIsValidated(message);
@@ -31,12 +39,14 @@ const Login = () => {
         .then((userCredential) => {
           // Signed up logic
           const user = userCredential.user;
-          console.log(user);
+          navigate("/browse");
+
           // ...
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
+
           setIsValidated(errorCode + "-" + errorMessage);
         });
     } else {
@@ -50,6 +60,7 @@ const Login = () => {
           // Signed in
           const user = userCredential.user;
           setIsValidated("Successfully Logged In now");
+          navigate("/browse");
           // ...
         })
         .catch((error) => {
@@ -79,6 +90,7 @@ const Login = () => {
         </h1>
         {!isSignInForm && (
           <input
+            ref={name}
             type="text"
             placeholder="Full Name"
             className="p-4 my-4  w-full bg-gray-500"
@@ -104,9 +116,7 @@ const Login = () => {
           {isSignInForm ? "Sign In" : "Sign Up"}
         </button>
 
-        <p className="  text-red-600 font-bold  ">
-          {isSignInForm === true ? isValidated : ""}
-        </p>
+        <p className="  text-red-600 font-bold  ">{isValidated}</p>
 
         <p className="py-4 font-bold cursor-pointer" onClick={toggleSignInForm}>
           {isSignInForm
