@@ -1,6 +1,6 @@
 import React from "react";
 import lang from "../utils/languageConstants";
-import { UseSelector, useSelector } from "react-redux/es/hooks/useSelector";
+import { useSelector } from "react-redux/es/hooks/useSelector";
 
 const GptSearchBar = () => {
   const currentLanguage = useSelector((store) => store.config.lang);
