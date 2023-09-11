@@ -74,7 +74,7 @@ const Header = () => {
             onClick={handleGptSearchClick}
             className=" py-2 px-4 my-3 mx-4  bg-purple-800 text-white rounded-e-lg"
           >
-            GPT Search
+            {isGptSearchVisible ? "All Movies" : "GPT Search"}
           </button>
           <img className=" w-12 h-12 " src={USER_AVATAR} alt="usericon" />
           <button
