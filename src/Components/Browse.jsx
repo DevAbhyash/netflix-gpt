@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { Fragment, useEffect } from "react";
+import { UseSelector, useSelector } from "react-redux/es/hooks/useSelector";
 import Header from "./Header";
 import useNowPlayingMovies from "../hooks/useNowPlaying";
 import MainContainer from "./MainContainer";
@@ -7,7 +8,10 @@ import usePopularMovies from "../hooks/usePopularMovies";
 import useTrendingMovie from "../hooks/useTrendingMovie";
 import useUpcommingMovies from "../hooks/useUpcommingMovies";
 
+import GptSearch from "./GptSearch";
+
 const Browse = () => {
+  const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
   useNowPlayingMovies();
   usePopularMovies();
   useTrendingMovie();
@@ -16,8 +20,14 @@ const Browse = () => {
   return (
     <div>
       <Header />
-      <MainContainer />
-      <SecondaryContainer />
+      {showGptSearch ? (
+        <GptSearch />
+      ) : (
+        <Fragment>
+          <MainContainer />
+          <SecondaryContainer />
+        </Fragment>
+      )}
     </div>
   );
 };
